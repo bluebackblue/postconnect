@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2016 blueback
  * Released under the MIT License
- * https://github.com/bluebackblue/brownie/blob/master/LICENSE
+ * https://github.com/bluebackblue/brownie/blob/master/LICENSE.txt
  * http://bbbproject.sakura.ne.jp/wordpress/mitlicense
  * @brief テスト。
 */
@@ -22,31 +22,29 @@ namespace NApp
 	*/
 	void App_Main()
 	{
-		/*
-		//コンパイル時アサート。
-		STATIC_ASSERT(sizeof(s32) == 4);
+		//バージョン。
+		std::cout << "PostConnect 1.0.0" " " __DATE__ << std::endl;
 
-		//タグログ。
-		TAGLOG(L"main",u8"テスト");
-		TAGLOG(L"main",L"テスト");
+		//ライブラリバージョン。
+		std::cout << BROWNIE_VERSION_STRING << std::endl;
+		
+		//ファイルシステム起動。
+		NBsys::NFile::StartSystem(1);
+		NBsys::NFile::SetRoot(0,L"./");
 
-		//デバッグログ。
-		DEBUGLOG(u8"%s%s\n",u8"デバッグ",u8"ログ");	
-		DEBUGLOG(L"%s%s\n",L"デバッグ",L"ログ");	
+		//通信。開始。
+		NBsys::NWinsock::StartSystem();
 
-		//デバッグブレイク。
-		DEBUGBREAK();
-
-		//スタックトレース。
 		{
-			STLString t_stacktrace;
-			STACKTRACE(t_stacktrace,-1);
-			DEBUGLOG(u8"%s\n",t_stacktrace.c_str());	
+			
 		}
 
-		//アサート。
-		ASSERT(0);
-		*/
+		//通信。終了。
+		NBsys::NWinsock::EndSystem();
+
+		//終了処理。
+		NBsys::NFile::EndSystemRequest();
+		NBsys::NFile::EndWaitSystem();
 
 		return;
 	}
