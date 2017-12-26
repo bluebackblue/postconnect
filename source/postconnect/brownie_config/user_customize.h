@@ -9,25 +9,13 @@
 */
 
 
-/** include
-
-	test.h
-
-	DEF_TEST_AUTO	: 自動テストを実行します。
-	DEF_TEST_INDEX	: テスト番号を設定します。
-
-*/
-#if(0)
-#include "./test.h"
-#endif
-
-
 /** brownie_config.h
 */
 #define					BSYS_WINSOCK_ENABLE				(1)
 #define					BSYS_HTTP_ENABLE				(1)
 #define					BSYS_FILE_ENABLE				(1)
 #define					BSYS_ACTIONBATCHING_ENABLE		(1)
+#define					BSYS_COMMANDLINE_ENABLE			(1)
 
 
 /** メモリリークチェック。

@@ -1015,3 +1015,22 @@
 #endif
 
 
+
+/*
+	-------------------
+	commandline
+
+		コマンドライン解析を制御します。
+	-------------------
+
+	-------------------
+	BSYS_COMMANDLINE_ENABLE
+
+		0 : オフ
+		1 : オン
+	-------------------
+*/
+#if !defined(BSYS_COMMANDLINE_ENABLE)
+	#define BSYS_COMMANDLINE_ENABLE							(0)
+#endif
+

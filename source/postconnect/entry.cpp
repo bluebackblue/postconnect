@@ -74,10 +74,12 @@ int main(int a_argc,char** a_argv)
 		t_blib = NBlib::BootInitialize();
 	}
 
+	GetEntryParamReference().argument = NBsys::NCommandLine::ConvertToJsonItem(a_argc,a_argv);
+
 	#if(DEF_TEST_AUTO)
 	{
 		try{
-			NApp::App_Main();
+			NTest::Test_Main();
 		}catch(...){
 			//DEBUGBREAK();
 		}
@@ -97,7 +99,7 @@ int main(int a_argc,char** a_argv)
 /** WinMain
 */
 #if defined(PLATFORM_VCWIN)
-int WINAPI WinMain(_In_ HINSTANCE a_hinstance,_In_opt_ HINSTANCE /*a_prev_hinstance*/,_In_ LPSTR a_commandline,_In_ int a_cmdshow)
+int WINAPI WinMain(_In_ HINSTANCE /*a_hinstance*/,_In_opt_ HINSTANCE /*a_prev_hinstance*/,_In_ LPSTR /*a_commandline*/,_In_ int /*a_cmdshow*/)
 {
 	#if defined(ROM_DEVELOP) || defined(ROM_DEEPDEBUG) || defined(ROM_FULLDEBUG)
 	if(s_leakcheck == false){
@@ -111,9 +113,9 @@ int WINAPI WinMain(_In_ HINSTANCE a_hinstance,_In_opt_ HINSTANCE /*a_prev_hinsta
 		t_blib = NBlib::BootInitialize();
 	}
 
-	GetEntryParamReference().hinstance = a_hinstance;
-
 	main(__argc,__argv);
+
+	GetEntryParamReference().Reset();
 
 	return 0;
 }

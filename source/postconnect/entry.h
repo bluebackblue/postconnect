@@ -14,22 +14,22 @@
 #include "./include.h"
 
 
-/** include
-*/
-#if defined(PLATFORM_VCWIN)
-	#include <brownie_config/windows_include.h>
-#endif
-
-
 /** EntryParam
 */
 struct EntryParam
 {
-	#if defined(PLATFORM_VCWIN)
-
-	HINSTANCE	hinstance;
-
+	#if(BLIB_JSONITEM_ENABLE)
+	sharedptr<JsonItem> argument;
 	#endif
+
+	/** Reset
+	*/
+	void Reset()
+	{
+		#if(BLIB_JSONITEM_ENABLE)
+		this->argument.reset();
+		#endif
+	}
 };
 
 
