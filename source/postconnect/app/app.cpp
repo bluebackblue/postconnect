@@ -40,6 +40,10 @@ namespace NApp
 		*/
 		sharedptr<NBsys::NHttp::Http> http;
 
+		/** 受信バッファ。
+		*/
+		sharedptr<RingBufferBase<u8>> recvbuffer;
+
 	public:
 
 		/** バイナリの読み込み。
@@ -109,7 +113,6 @@ namespace NApp
 			return nullptr;
 		}
 
-
 		/** コンフィグの読み込み。
 		*/
 		bool LoadConfig()
@@ -134,6 +137,17 @@ namespace NApp
 			}
 
 			return false;
+		}
+
+
+		//TODO:
+		const std::shared_ptr<std::string>& tes1()
+		{
+			return nullptr;
+		}
+		const sharedptr<STLString>& tes2()
+		{
+			return nullptr;
 		}
 
 
@@ -191,7 +205,7 @@ namespace NApp
 				int t_list_max = -1;
 				{
 					if(this->config->IsExistItem("contents") == true){
-						if(this->config->GetItem("contents")->GetValueType() == JsonItem::ValueType::AssociativeArray){
+						if(this->config->GetItem("contents")->GetValueType() == JsonItem::ValueType::IndexArray){
 							t_list_max = this->config->GetItem("contents")->GetListMax();
 						}else{
 							return nullptr;
@@ -202,13 +216,13 @@ namespace NApp
 				}
 
 				for(int ii=0;ii<t_list_max;ii++){
-					sharedptr< JsonItem > t_content_item = this->config->GetItem("contents")->GetItem(ii);
+					sharedptr<JsonItem> t_content_item = this->config->GetItem("contents")->GetItem(ii);
 
 					STLString t_type_string;
 
-					if(this->config->IsExistItem("type") == true){
-						if(this->config->GetItem("type")->GetValueType() == JsonItem::ValueType::StringData){
-							t_type_string = this->config->GetItem("type")->GetStringData();
+					if(t_content_item->IsExistItem("type") == true){
+						if(t_content_item->GetItem("type")->GetValueType() == JsonItem::ValueType::StringData){
+							t_type_string = *t_content_item->GetItem("type")->GetStringData();
 						}else{
 							return nullptr;
 						}
@@ -223,7 +237,7 @@ namespace NApp
 						STLString t_filename;
 
 						if(t_content_item->IsExistItem("path") == true){
-							if(t_content_item->GetValueType() == JsonItem::ValueType::StringData){
+							if(t_content_item->GetItem("path")->GetValueType() == JsonItem::ValueType::StringData){
 								CharToWchar(*t_content_item->GetItem("path")->GetStringData(),t_path);
 								if(t_path.length() <= 0){
 									return nullptr;
@@ -236,8 +250,8 @@ namespace NApp
 						}
 
 						if(t_content_item->IsExistItem("formname") == true){
-							if(t_content_item->GetValueType() == JsonItem::ValueType::StringData){
-								t_formname = t_content_item->GetItem("formname")->GetStringData();
+							if(t_content_item->GetItem("formname")->GetValueType() == JsonItem::ValueType::StringData){
+								t_formname = *t_content_item->GetItem("formname")->GetStringData();
 								if(t_formname.length() <= 0){
 									return nullptr;
 								}
@@ -249,8 +263,8 @@ namespace NApp
 						}
 
 						if(t_content_item->IsExistItem("filename") == true){
-							if(t_content_item->GetValueType() == JsonItem::ValueType::StringData){
-								t_filename = t_content_item->GetItem("filename")->GetStringData();
+							if(t_content_item->GetItem("filename")->GetValueType() == JsonItem::ValueType::StringData){
+								t_filename = *t_content_item->GetItem("filename")->GetStringData();
 								if(t_filename.length() <= 0){
 									return nullptr;
 								}
@@ -273,8 +287,8 @@ namespace NApp
 						STLString t_formvalue;
 
 						if(t_content_item->IsExistItem("formname") == true){
-							if(t_content_item->GetValueType() == JsonItem::ValueType::StringData){
-								t_formname = t_content_item->GetItem("formname")->GetStringData();
+							if(t_content_item->GetItem("formname")->GetValueType() == JsonItem::ValueType::StringData){
+								t_formname = *t_content_item->GetItem("formname")->GetStringData();
 								if(t_formname.length() <= 0){
 									return nullptr;
 								}
@@ -286,8 +300,8 @@ namespace NApp
 						}
 
 						if(t_content_item->IsExistItem("formvalue") == true){
-							if(t_content_item->GetValueType() == JsonItem::ValueType::StringData){
-								t_formvalue = t_content_item->GetItem("formvalue")->GetStringData();
+							if(t_content_item->GetItem("formvalue")->GetValueType() == JsonItem::ValueType::StringData){
+								t_formvalue = *t_content_item->GetItem("formvalue")->GetStringData();
 								if(t_formvalue.length() <= 0){
 									return nullptr;
 								}
@@ -306,6 +320,62 @@ namespace NApp
 						return nullptr;
 
 					}
+				}
+			}
+
+			return true;
+		}
+
+
+		/** 通信。
+		*/
+		bool Connect()
+		{
+			sharedptr<NBlib::FileHandle> t_out_file(new NBlib::FileHandle());
+			{
+				STLWString t_output_filename;
+
+				if(this->config->IsExistItem("output") == true){
+					if(this->config->GetItem("output")->GetValueType() == JsonItem::ValueType::StringData){
+						CharToWchar(*this->config->GetItem("output")->GetStringData(),t_output_filename);
+						if(t_output_filename.length() <= 0){
+							return false;
+						}
+					}else{
+						return false;
+					}
+				}else{
+					return false;
+				}
+				
+				if(t_out_file->WriteOpen(t_output_filename) == false){
+					return false;
+				}
+			}
+
+			//通信開始。
+			this->recvbuffer.reset(new RingBuffer<u8,1*1024*1024,true>());
+			this->http->ConnectStart(this->recvbuffer);
+
+			//通信中。
+			for(;;){
+				bool t_ret = this->http->ConnectUpdate();
+				if((t_ret == true)||(this->recvbuffer->GetUseSize() > 0)){
+					if(this->http->IsRecvHeader()){
+						//ヘッダー読み込み済み。
+						s32 t_size = this->recvbuffer->GetContinuousUseSize();
+						if(t_size > 0){
+							//リングバッファの内容を書き込む。
+							t_out_file->Write(this->recvbuffer->GetItemFromUseList(0),t_size,0);
+							//リングバッファからデータを取得したことにする。
+							this->recvbuffer->AddFree(t_size);
+						}
+					}
+				}else{
+					this->http->ConnectEnd();
+
+					this->http.reset();
+					break;
 				}
 			}
 
@@ -335,7 +405,8 @@ namespace NApp
 			App t_app;
 			if(t_app.LoadConfig() == true){
 				if(t_app.CreateHttp() == true){
-					
+					if(t_app.Connect() == true){
+					}
 				}
 			}
 		}
