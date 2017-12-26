@@ -17,7 +17,7 @@ platforms
 project "postconnect"
 
 do
-	kind "WindowedApp"
+	kind "ConsoleApp"
 
 	entrypoint "mainCRTStartup"
 

@@ -50,6 +50,8 @@ namespace NApp
 		*/
 		sharedptr<NBsys::NFile::File_Object> LoaBinaryFile(const STLWString& a_filename)
 		{
+			std::cout << "open : " << WcharToChar(a_filename) << std::endl;
+
 			//読み込み開始。
 			sharedptr<NBsys::NFile::File_Object> t_fileobject;
 			t_fileobject.reset(new NBsys::NFile::File_Object(0,a_filename,-1,nullptr,0));
@@ -61,6 +63,8 @@ namespace NApp
 
 			if(t_fileobject->GetErrorCode() == ErrorCode::Success){
 				return t_fileobject;
+			}else{
+				std::cout << "error : " << WcharToChar(a_filename) << std::endl;
 			}
 
 			return nullptr;
@@ -70,6 +74,8 @@ namespace NApp
 		*/
 		sharedptr<JsonItem> LoadJsonFile(const STLWString& a_filename)
 		{
+			std::cout << "open : " << WcharToChar(a_filename) << std::endl;
+
 			//読み込み開始。
 			sharedptr<NBsys::NFile::File_Object> t_fileobject;
 			t_fileobject.reset(new NBsys::NFile::File_Object(0,a_filename,-1,nullptr,1));
@@ -108,10 +114,14 @@ namespace NApp
 					sharedptr<JsonItem> t_jsonitem(new JsonItem(reinterpret_cast<char*>(t_fileobject->GetLoadData().get())));
 					return t_jsonitem;
 				}
+
+			}else{
+				std::cout << "error : " << WcharToChar(a_filename) << std::endl;
 			}
 
 			return nullptr;
 		}
+
 
 		/** コンフィグの読み込み。
 		*/
@@ -123,31 +133,32 @@ namespace NApp
 			if(this->app_argument){
 				if(this->app_argument->IsExistItem("-input") == true){
 					if(this->app_argument->GetItem("-input")->GetValueType() == JsonItem::ValueType::StringData){
-						CharToWchar(*this->app_argument->GetItem("-input")->GetStringData().get(),this->filename_config);
+						this->filename_config = CharToWchar(*this->app_argument->GetItem("-input")->GetStringData().get());
+						if(this->filename_config.length() > 0){
+							std::cout << "input : " << WcharToChar(this->filename_config) << std::endl;
+						}else{
+							std::cout << "error : input" << std::endl;
+							return false;
+						}
+					}else{
+						std::cout << "error : input" << std::endl;
+						return false;
 					}
+				}else{
+					std::cout << "error : input" << std::endl;
+					return false;
 				}
+			}else{
+				std::cout << "error : input" << std::endl;
+				return false;
 			}
 
 			//ＪＳＯＮファイルの読み込み。
-			if(filename_config.length() > 0){
-				this->config = this->LoadJsonFile(this->filename_config);
-				if(this->config){
-					return true;
-				}
+			this->config = this->LoadJsonFile(this->filename_config);
+			if(this->config){
+				return true;
 			}
-
 			return false;
-		}
-
-
-		//TODO:
-		const std::shared_ptr<std::string>& tes1()
-		{
-			return nullptr;
-		}
-		const sharedptr<STLString>& tes2()
-		{
-			return nullptr;
 		}
 
 
@@ -164,12 +175,18 @@ namespace NApp
 					if(this->config->GetItem("host")->GetValueType() == JsonItem::ValueType::StringData){
 						STLString t_host = *this->config->GetItem("host")->GetStringData();
 						if(t_host.length() > 0){
+							std::cout << "host : " << t_host << std::endl;
 							this->http->SetHost(t_host);
+						}else{
+							std::cout << "error : host" << std::endl;
+							return nullptr;
 						}
 					}else{
+						std::cout << "error : host" << std::endl;
 						return nullptr;
 					}
 				}else{
+					std::cout << "error : host" << std::endl;
 					return nullptr;
 				}
 
@@ -177,12 +194,18 @@ namespace NApp
 					if(this->config->GetItem("port")->GetValueType() == JsonItem::ValueType::IntegerNumber){
 						s32 t_port = this->config->GetItem("port")->GetInteger();
 						if(t_port > 0){
+							std::cout << "port : " << t_port << std::endl;
 							this->http->SetPort(t_port);
+						}else{
+							std::cout << "error : port" << std::endl;
+							return nullptr;
 						}
 					}else{
+						std::cout << "error : port" << std::endl;
 						return nullptr;
 					}
 				}else{
+					std::cout << "error : port" << std::endl;
 					return nullptr;
 				}
 
@@ -190,12 +213,18 @@ namespace NApp
 					if(this->config->GetItem("url")->GetValueType() == JsonItem::ValueType::StringData){
 						STLString t_url = *this->config->GetItem("url")->GetStringData();
 						if(t_url.length() > 0){
+							std::cout << "url : " << t_url << std::endl;
 							this->http->SetUrl(t_url);
+						}else{
+							std::cout << "error : url" << std::endl;
+							return nullptr;
 						}
 					}else{
+						std::cout << "error : url" << std::endl;
 						return nullptr;
 					}
 				}else{
+					std::cout << "error : url" << std::endl;
 					return nullptr;
 				}
 			}
@@ -207,10 +236,13 @@ namespace NApp
 					if(this->config->IsExistItem("contents") == true){
 						if(this->config->GetItem("contents")->GetValueType() == JsonItem::ValueType::IndexArray){
 							t_list_max = this->config->GetItem("contents")->GetListMax();
+							std::cout << "contents : " << t_list_max << std::endl;
 						}else{
+							std::cout << "error : contents" << std::endl;
 							return nullptr;
 						}
 					}else{
+						std::cout << "error : contents" << std::endl;
 						return nullptr;
 					}
 				}
@@ -223,10 +255,18 @@ namespace NApp
 					if(t_content_item->IsExistItem("type") == true){
 						if(t_content_item->GetItem("type")->GetValueType() == JsonItem::ValueType::StringData){
 							t_type_string = *t_content_item->GetItem("type")->GetStringData();
+							if(t_type_string.length() > 0){
+								std::cout << "type : " << t_type_string << std::endl;
+							}else{
+								std::cout << "error : type" << std::endl;
+								return nullptr;
+							}
 						}else{
+							std::cout << "error : type" << std::endl;
 							return nullptr;
 						}
 					}else{
+						std::cout << "error : type" << std::endl;
 						return nullptr;
 					}
 
@@ -239,39 +279,54 @@ namespace NApp
 						if(t_content_item->IsExistItem("path") == true){
 							if(t_content_item->GetItem("path")->GetValueType() == JsonItem::ValueType::StringData){
 								CharToWchar(*t_content_item->GetItem("path")->GetStringData(),t_path);
-								if(t_path.length() <= 0){
+								if(t_path.length() > 0){
+									std::cout << "path : " << WcharToChar(t_path) << std::endl;
+								}else{
+									std::cout << "error : path" << std::endl;
 									return nullptr;
 								}
 							}else{
+								std::cout << "error : path" << std::endl;
 								return nullptr;
 							}
 						}else{
+							std::cout << "error : path" << std::endl;
 							return nullptr;
 						}
 
 						if(t_content_item->IsExistItem("formname") == true){
 							if(t_content_item->GetItem("formname")->GetValueType() == JsonItem::ValueType::StringData){
 								t_formname = *t_content_item->GetItem("formname")->GetStringData();
-								if(t_formname.length() <= 0){
+								if(t_formname.length() > 0){
+									std::cout << "formname : " << t_formname << std::endl;
+								}else{
+									std::cout << "error : formname" << std::endl;
 									return nullptr;
 								}
 							}else{
+								std::cout << "error : formname" << std::endl;
 								return nullptr;
 							}
 						}else{
+							std::cout << "error : formname" << std::endl;
 							return nullptr;
 						}
 
 						if(t_content_item->IsExistItem("filename") == true){
 							if(t_content_item->GetItem("filename")->GetValueType() == JsonItem::ValueType::StringData){
 								t_filename = *t_content_item->GetItem("filename")->GetStringData();
-								if(t_filename.length() <= 0){
+								if(t_filename.length() > 0){
+									std::cout << "filename : " << t_filename << std::endl;
+								}else{
+									std::cout << "error : filename" << std::endl;
 									return nullptr;
 								}
 							}else{
+								std::cout << "error : filename" << std::endl;
 								return nullptr;
 							}
 						}else{
+							std::cout << "error : filename" << std::endl;
 							return nullptr;
 						}
 
@@ -289,26 +344,36 @@ namespace NApp
 						if(t_content_item->IsExistItem("formname") == true){
 							if(t_content_item->GetItem("formname")->GetValueType() == JsonItem::ValueType::StringData){
 								t_formname = *t_content_item->GetItem("formname")->GetStringData();
-								if(t_formname.length() <= 0){
+								if(t_formname.length() > 0){
+									std::cout << "forname : " << t_formname << std::endl;
+								}else{
+									std::cout << "error : forname" << std::endl;
 									return nullptr;
 								}
 							}else{
+								std::cout << "error : forname" << std::endl;
 								return nullptr;
 							}
 						}else{
+							std::cout << "error : forname" << std::endl;
 							return nullptr;
 						}
 
 						if(t_content_item->IsExistItem("formvalue") == true){
 							if(t_content_item->GetItem("formvalue")->GetValueType() == JsonItem::ValueType::StringData){
 								t_formvalue = *t_content_item->GetItem("formvalue")->GetStringData();
-								if(t_formvalue.length() <= 0){
+								if(t_formvalue.length() > 0){
+									std::cout << "formvalue : " << t_formvalue << std::endl;
+								}else{
+									std::cout << "error : formvalue" << std::endl;
 									return nullptr;
 								}
 							}else{
+								std::cout << "error : formvalue" << std::endl;
 								return nullptr;
 							}
 						}else{
+							std::cout << "error : formvalue" << std::endl;
 							return nullptr;
 						}
 
@@ -316,9 +381,8 @@ namespace NApp
 						this->http->AddPostContent(t_formname,t_formvalue);
 
 					}else{
-
+						std::cout << "error : type" << std::endl;
 						return nullptr;
-
 					}
 				}
 			}
@@ -338,22 +402,30 @@ namespace NApp
 				if(this->config->IsExistItem("output") == true){
 					if(this->config->GetItem("output")->GetValueType() == JsonItem::ValueType::StringData){
 						CharToWchar(*this->config->GetItem("output")->GetStringData(),t_output_filename);
-						if(t_output_filename.length() <= 0){
+						if(t_output_filename.length() > 0){
+							std::cout << "output : " << WcharToChar(t_output_filename) << std::endl;
+						}else{
+							std::cout << "error : output" << std::endl;
 							return false;
 						}
 					}else{
+						std::cout << "error : output" << std::endl;
 						return false;
 					}
 				}else{
+					std::cout << "error : output" << std::endl;
 					return false;
 				}
 				
+				std::cout << "open : " << WcharToChar(t_output_filename) << std::endl;
 				if(t_out_file->WriteOpen(t_output_filename) == false){
+					std::cout << "error : " << WcharToChar(t_output_filename) << std::endl;
 					return false;
 				}
 			}
 
 			//通信開始。
+			std::cout << "connect : start" << std::endl;
 			this->recvbuffer.reset(new RingBuffer<u8,1*1024*1024,true>());
 			this->http->ConnectStart(this->recvbuffer);
 
@@ -372,6 +444,13 @@ namespace NApp
 						}
 					}
 				}else{
+					if(this->http->IsError() == true){
+						std::cout << "connect : error : " << std::endl;
+					}
+
+					std::cout << "connect : statuscode : " << this->http->GetStatusCode() << std::endl;
+
+					std::cout << "connect : end" << std::endl;
 					this->http->ConnectEnd();
 
 					this->http.reset();
@@ -389,7 +468,7 @@ namespace NApp
 	void App_Main()
 	{
 		//バージョン。
-		std::cout << "PostConnect 1.0.0" " " __DATE__ << std::endl;
+		std::cout << "PostConnect 1.0.0" " " __DATE__  << std::endl;
 
 		//ライブラリバージョン。
 		std::cout << BROWNIE_VERSION_STRING << std::endl;
