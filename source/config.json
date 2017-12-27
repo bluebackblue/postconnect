@@ -1,1 +1,1 @@
-{"host":"bbbproject.sakura.ne.jp","port":80,"output":"output.dat","separate":"zzzzzzzzzzzzzzzzzz","url":"/www/project_exceltojson/index.php?mode=upload","contents":[{"type":"binary","filename":"text.xlsx","path":"./test.xlsx","formname":"upfile"},{"type":"param","formname":"type","formvalue":"json"}]}
+{"host":"bbbproject.sakura.ne.jp","port":80,"output":"output.dat","url":"/www/project_exceltojson/index.php?mode=upload","contents":[{"type":"binary","filename":"text.xlsx","path":"./test.xlsx","name":"upfile"},{"type":"param","name":"type","value":"json"}]}
