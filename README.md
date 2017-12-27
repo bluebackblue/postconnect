@@ -31,5 +31,13 @@ https://github.com/bluebackblue/postconnect/blob/master/LICENSE.txt
 
 起動引数
 
-* -input 入力ファイル名
+* -input コンフィグファイル名
+
 例 postconnect.exe -input config.json
+
+コンフィグファイル
+
+* wiki参照
+
+
+
