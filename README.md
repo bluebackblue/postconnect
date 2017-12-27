@@ -1,5 +1,5 @@
 # postconnect
-POST通信を行う
+POST送信を行います。
 
 ## license
 MIT License
