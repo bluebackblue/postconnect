@@ -28,7 +28,8 @@ https://github.com/bluebackblue/postconnect/blob/master/LICENSE.txt
 * step 2: OPEN ./postconnect/source/postconnect.sln
 
 ## how to use
-### 起動引数
-#### input
-例 postconnect.exe -input config.json
 
+起動引数
+
+* -input 入力ファイル名
+例 postconnect.exe -input config.json
