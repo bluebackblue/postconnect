@@ -29,6 +29,6 @@ https://github.com/bluebackblue/postconnect/blob/master/LICENSE.txt
 
 ## how to use
 ### 起動引数
-* -input
+#### -input
 例 postconnect.exe -input config.json
 
