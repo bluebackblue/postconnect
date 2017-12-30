@@ -1,7 +1,7 @@
 ﻿
 
 /**
- * Copyright (c) 2016 blueback
+ * Copyright (c) 2016-2017 blueback
  * Released under the MIT License
  * https://github.com/bluebackblue/brownie/blob/master/LICENSE.txt
  * http://bbbproject.sakura.ne.jp/wordpress/mitlicense
@@ -21,7 +21,20 @@
 #endif
 
 
-/** NApp
+/** include
+*/
+#include "./entry.h"
+
+
+/** warning
+
+4710 : この関数はインライン展開のために選択されましたが、コンパイラはインライン展開を実行しませんでした。
+
+*/
+#pragma warning(disable:4710)
+
+
+/** NTest
 */
 namespace NApp
 {
@@ -29,11 +42,6 @@ namespace NApp
 	*/
 	void App_Main();
 }
-
-
-/** include
-*/
-#include "./entry.h"
 
 
 /** GetEntryParamReference
@@ -50,6 +58,14 @@ EntryParam& GetEntryParamReference()
 #if defined(ROM_DEVELOP) || defined(ROM_DEEPDEBUG) || defined(ROM_FULLDEBUG)
 static bool s_leakcheck = false;
 #endif
+
+
+/** warning
+
+4710 : この関数はインライン展開のために選択されましたが、コンパイラはインライン展開を実行しませんでした。
+
+*/
+#pragma warning(disable:4710)
 
 
 /** Main
@@ -74,21 +90,16 @@ int main(int a_argc,char** a_argv)
 		t_blib = NBlib::BootInitialize();
 	}
 
+	#if(BSYS_COMMANDLINE_ENABLE)
 	GetEntryParamReference().argument = NBsys::NCommandLine::ConvertToJsonItem(a_argc,a_argv);
-
-	#if(DEF_TEST_AUTO)
-	{
-		try{
-			NTest::Test_Main();
-		}catch(...){
-			//DEBUGBREAK();
-		}
-	}
 	#else
-	{
-		NApp::App_Main();
-	}
+	UNUSED(a_argc);
+	UNUSED(a_argv);
 	#endif
+
+	NApp::App_Main();
+
+	GetEntryParamReference().Reset();
 
 	#if defined(PLATFORM_GNUCWIN)
 	return 0;
