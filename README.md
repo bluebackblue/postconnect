@@ -1,5 +1,5 @@
 # postconnect
-POST送信を行います。
+ファイル、パラメータのPOST送信を行います。
 
 ## license
 MIT License
