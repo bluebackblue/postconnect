@@ -1,5 +1,7 @@
 CALL ..\..\..\setting.bat
 
+@ECHO postconnect > log.txt
+
 FOR /F %%C IN (configuration.txt) DO (
 	FOR /F %%P IN (platform.txt) DO (
 		@REM ƒrƒ‹ƒhB
