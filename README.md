@@ -7,13 +7,13 @@ https://github.com/bluebackblue/postconnect/blob/master/LICENSE.txt
 
 ## folder structure
 フォルダ構造
-* postconnect 「チェックアウト : https://github.com/bluebackblue/postconnect」
+* postconnect 「チェックアウト : https://github.com/bluebackblue/postconnect 」
 * _ license [使用ライセンス関連ファイル]
 * _ premake [ビルドツール]
 * _ source
 * ___ premake.bat
 * ___ postconnect
-* brownie 「チェックアウト : https://github.com/bluebackblue/brownie」 このリポジトリとは別のリポジトリです。
+* brownie 「チェックアウト : https://github.com/bluebackblue/brownie 」 このリポジトリとは別のリポジトリです。
 
 ## include path
 インクルードパス
@@ -21,6 +21,11 @@ https://github.com/bluebackblue/postconnect/blob/master/LICENSE.txt
 
 ## link path
 リンクパス
+
+## brownie
+このリポジトリとは別のリポジトリです。
+
+上のフォルダ構造を参考にチェックアウトを行ってください。
 
 ## postconnect project
 起動までの手順
