@@ -13,7 +13,7 @@ https://github.com/bluebackblue/postconnect/blob/master/LICENSE.txt
 * _ source
 * ___ premake.bat
 * ___ postconnect
-* brownie 「チェックアウト : https://github.com/bluebackblue/brownie 」 
+* brownie 「チェックアウト : https://github.com/bluebackblue/brownie/tree/1.0.1 」 
 
 ## include path
 インクルードパス
