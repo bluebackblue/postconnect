@@ -814,49 +814,12 @@
 
 		デバッグ機能を制御します。
 	-------------------
-
-	-------------------
-	BSYS_D3D11_FONT_DRAWTYPEMAX_S
-
-		小フォントテクスチャーに格納可能な文字数を設定します。
-	-------------------
-
-	-------------------
-	BSYS_D3D11_FONT_DRAWTYPEMAX_M
-
-		中フォントテクスチャーに格納可能な文字数を設定します。
-	-------------------
-
-	-------------------
-	BSYS_D3D11_FONT_DRAWTYPEMAX_L
-
-		大フォントテクスチャーに格納可能な文字数を設定します。
-	-------------------
-
-	-------------------
-	BSYS_D3D11_FONT_DRAWTYPEMAX_EX
-
-		特大フォントテクスチャーに格納可能な文字数を設定します。
-	-------------------
-
 */
 #if !defined(BSYS_D3D11_ENABLE)
 	#define BSYS_D3D11_ENABLE								(0)
 #endif
 #if !defined(BSYS_D3D11_DEBUG_ENABLE)
 	#define BSYS_D3D11_DEBUG_ENABLE							(0)
-#endif
-#if !defined(BSYS_D3D11_FONT_DRAWTYPEMAX_S)
-	#define BSYS_D3D11_FONT_DRAWTYPEMAX_S					(128)
-#endif
-#if !defined(BSYS_D3D11_FONT_DRAWTYPEMAX_M)
-	#define BSYS_D3D11_FONT_DRAWTYPEMAX_M					(128)
-#endif
-#if !defined(BSYS_D3D11_FONT_DRAWTYPEMAX_L)
-	#define BSYS_D3D11_FONT_DRAWTYPEMAX_L					(32)
-#endif
-#if !defined(BSYS_D3D11_FONT_DRAWTYPEMAX_EX)
-	#define BSYS_D3D11_FONT_DRAWTYPEMAX_EX					(16)
 #endif
 
 
